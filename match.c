@@ -4,21 +4,26 @@
 #include "object.h"
 #include "misc.h"
 #include "match.h"
+
 const char *params[MAX_PARAMS];
+
 static const char *skipSpaces(const char *src)
 {
    while (isspace(*src)) src++;
    return src;
 }
+
 static const char *matchSpaces(const char *src)
 {
    return *src == '\0' || isspace(*src) ? skipSpaces(src) : NULL;
 }
+
 static const char *matchTerminal(const char *src, char terminal)
 {
    return terminal == ' '                    ? matchSpaces(src) :
           tolower(*src) == tolower(terminal) ? src + 1          : NULL;
 }
+
 static const char *matchTag(const char *src, const char *tag, bool atEnd)
 {
    while (src != NULL && *tag != '\0')
@@ -27,6 +32,7 @@ static const char *matchTag(const char *src, const char *tag, bool atEnd)
    }
    return atEnd && src != NULL && *skipSpaces(src) != '\0' ? NULL : src;
 }
+
 static const char *matchParam(const char *src, const char **par, bool loose)
 {
    const char *restOfSrc = loose ? src + strlen(src) : NULL;
@@ -50,6 +56,7 @@ static const char *matchParam(const char *src, const char **par, bool loose)
    }
    return restOfSrc;
 }
+
 bool matchCommand(const char *src, const char *pattern)
 {
    const char **par;

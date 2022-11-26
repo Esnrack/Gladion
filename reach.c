@@ -3,6 +3,7 @@
 #include "object.h"
 #include "misc.h"
 #include "noun.h"
+
 OBJECT *reachableObject(const char *intention, const char *noun)
 {
    OBJECT *obj = getVisible(intention, noun);

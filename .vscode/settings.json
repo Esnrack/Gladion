@@ -1,5 +1,18 @@
 {
     "files.associations": {
-        "reach.h": "c"
+        "local.h": "c",
+        "objeto.h": "c",
+        "stdio.h": "c",
+        "stdbool.h": "c",
+        "onoff.h": "c",
+        "inventario.h": "c",
+        "dano.h": "c",
+        "abrefecha.h": "c",
+        "falar.h": "c",
+        "achar.h": "c",
+        "chegar.h": "c",
+        "nome.h": "c",
+        "separaexec.h": "c",
+        "mudar.h": "c"
     }
 }

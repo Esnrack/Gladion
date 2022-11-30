@@ -1,26 +1,26 @@
 #include <stdbool.h>
 #include <stdio.h>
-#include "object.h"
+#include "objeto.h"
 #include "misc.h"
 
-bool isHolding(OBJECT *container, OBJECT *obj)
+bool estaSegurando(OBJETO *recipiente, OBJETO *obj)
 {
-   return validObject(obj) && obj->location == container;
+   return objetoValido(obj) && obj->local == recipiente;
 }
 
-bool isLit(OBJECT *target)
+bool estaAceso(OBJETO *alvo)
 {
-   OBJECT *obj;
-   if (validObject(target))
+   OBJETO *obj;
+   if (objetoValido(alvo))
    {
-      if (target->light > 0)
+      if (alvo->luz > 0)
       {
          return true;
       }
-      for (obj = objs; obj < endOfObjs; obj++)
+      for (obj = objs; obj < fimDosObjs; obj++)
       {
-         if (validObject(obj) && obj->light > 0 &&
-             (isHolding(target, obj) || isHolding(target, obj->location)))
+         if (objetoValido(obj) && obj->luz > 0 &&
+             (estaSegurando(alvo, obj) || estaSegurando(alvo, obj->local)))
          {
             return true;
          }
@@ -29,20 +29,20 @@ bool isLit(OBJECT *target)
    return false;
 }
 
-static bool isNoticeable(OBJECT *obj)
+static bool estaPerceptivel(OBJETO *obj)
 {
-   return obj->location == player ||
-          isLit(obj) || isLit(obj->prospect) || isLit(player->location);
+   return obj->local == player ||
+          estaAceso(obj) || estaAceso(obj->perspectiva) || estaAceso(player->local);
 }
 
-OBJECT *getPassage(OBJECT *from, OBJECT *to)
+OBJETO *verPassagem(OBJETO *de, OBJETO *para)
 {
-   if (from != NULL && to != NULL)
+   if (de != NULL && para != NULL)
    {
-      OBJECT *obj;
-      for (obj = objs; obj < endOfObjs; obj++)
+      OBJETO *obj;
+      for (obj = objs; obj < fimDosObjs; obj++)
       {
-         if (isHolding(from, obj) && obj->prospect == to)
+         if (estaSegurando(de, obj) && obj->perspectiva == para)
          {
             return obj;
          }
@@ -51,28 +51,28 @@ OBJECT *getPassage(OBJECT *from, OBJECT *to)
    return NULL;
 }
 
-DISTANCE getDistance(OBJECT *from, OBJECT *to)
+DISTANCE verDistancia(OBJETO *de, OBJETO *para)
 {
-   return to == NULL                               ? distUnknownObject :
-          !validObject(to)                         ? distNotHere :
-          to == from                               ? distSelf :
-          isHolding(from, to)                      ? distHeld :
-          !isNoticeable(to)                        ? distNotHere :
-          isHolding(to, from)                      ? distLocation :
-          isHolding(from->location, to)            ? distHere :
-          isHolding(from, to->location)            ? distHeldContained :
-          isHolding(from->location, to->location)  ? distHereContained :
-          getPassage(from->location, to) != NULL   ? distOverthere :
-                                                     distNotHere;
+   return para == NULL                               ? distObjetoDesconhecido :
+          !objetoValido(para)                         ? distAquiNao :
+          para == de                               ? distEu :
+          estaSegurando(de, para)                      ? distGuardado :
+          !estaPerceptivel(para)                        ? distAquiNao :
+          estaSegurando(para, de)                      ? distLocal :
+          estaSegurando(de->local, para)            ? distAqui :
+          estaSegurando(de, para->local)            ? distContidoGuardado :
+          estaSegurando(de->local, para->local)  ? distContidoAqui :
+          verPassagem(de->local, para) != NULL   ? distLa :
+                                                     distAquiNao;
 }
 
-OBJECT *actorHere(void)
+OBJETO *atorAqui(void)
 {
-   OBJECT *obj;
-   for (obj = objs; obj < endOfObjs; obj++)
+   OBJETO *obj;
+   for (obj = objs; obj < fimDosObjs; obj++)
    {
-      if (isHolding(player->location, obj) && obj != player &&
-          isNoticeable(obj) && obj->health > 0)
+      if (estaSegurando(player->local, obj) && obj != player &&
+          estaPerceptivel(obj) && obj->vida > 0)
       {
          return obj;
       }
@@ -80,20 +80,20 @@ OBJECT *actorHere(void)
    return NULL;
 }
 
-int listObjectsAtLocation(OBJECT *location)
+int listaObjetosNoLocal(OBJETO *local)
 {
-   int count = 0;
-   OBJECT *obj;
-   for (obj = objs; obj < endOfObjs; obj++)
+   int contar = 0;
+   OBJETO *obj;
+   for (obj = objs; obj < fimDosObjs; obj++)
    {
-      if (obj != player && isHolding(location, obj) && isNoticeable(obj))
+      if (obj != player && estaSegurando(local, obj) && estaPerceptivel(obj))
       {
-         if (count++ == 0)
+         if (contar++ == 0)
          {
-            printf("%s:\n", location->contents);
+            printf("%s:\n", local->conteudos);
          }
-         printf("%s\n", obj->description);
+         printf("%s\n", obj->descricao);
       }
    }
-   return count;
+   return contar;
 }

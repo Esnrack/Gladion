@@ -1,2 +1,2 @@
-extern int executeTurnOn(void);
-extern int executeTurnOff(void);
+extern int executarLigar(void);
+extern int executarDesligar(void);

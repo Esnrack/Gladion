@@ -1,35 +1,35 @@
-all: lilcave success.txt src.zip map.png
+all: Gladion success.txt src.zip map.png
 
-C = object.c misc.c match.c noun.c toggle.c location.c move.c reach.c inventory.c inventory2.c openclose.c onoff.c talk.c damage.c attack.c turn.c expand.c parsexec.c main.c
-H = object.h misc.h match.h noun.h toggle.h location.h move.h reach.h inventory.h inventory2.h openclose.h onoff.h talk.h damage.h attack.h turn.h expand.h parsexec.h
+C = objeto.c misc.c achar.c nome.c mudar.c local.c mover.c chegar.c inventario.c inventario2.c abrefecha.c onoff.c falar.c dano.c ataque.c turno.c expandir.c separaexec.c main.c
+H = objeto.h misc.h achar.h nome.h mudar.h local.h mover.h chegar.h inventario.h inventario2.h abrefecha.h onoff.h falar.h dano.h ataque.h turno.h expandir.h separaexec.h
 
-success.txt: lilcave.testable testscript.txt baseline.txt
-	./lilcave.testable testscript.txt > transcript.txt
+success.txt: Gladion.testable testscript.txt baseline.txt
+	./Gladion.testable testscript.txt > transcript.txt
 	gcov *.gcda | tee codecoverage.txt | tail -n1
 	cmp baseline.txt transcript.txt
 	mv -f transcript.txt $@
 
-lilcave.testable: $(C) $(H)
+Gladion.testable: $(C) $(H)
 	gcc --coverage $(C) -o $@
 
-lilcave: $(C) $(H)
+Gladion: $(C) $(H)
 	gcc -Wall -Wextra -Wpedantic -Werror $(C) -o $@
 
-object.h: object.awk object.txt
-	awk -v pass=h -f object.awk object.txt > $@
+objeto.h: objeto.awk objeto.txt
+	awk -v pass=h -f objeto.awk objeto.txt > $@
 
-object.c: object.awk object.txt
-	awk -v pass=c1 -f object.awk object.txt > $@
-	awk -v pass=c2 -f object.awk object.txt >> $@
+objeto.c: objeto.awk objeto.txt
+	awk -v pass=c1 -f objeto.awk objeto.txt > $@
+	awk -v pass=c2 -f objeto.awk objeto.txt >> $@
 
 map.png: map.gv
 	dot -Tpng -o $@ $<
 
-map.gv: map.awk object.txt
-	awk -f map.awk object.txt > $@
+map.gv: map.awk objeto.txt
+	awk -f map.awk objeto.txt > $@
 
-src.zip: $(C) $(H) object.txt makefile testscript.txt baseline.txt
+src.zip: $(C) $(H) objeto.txt makefile testscript.txt baseline.txt
 	zip -rq $@ $^
 
 clean:
-	$(RM) object.c object.h lilcave map.gv map.png lilcave.testable *.gcda *.gcno *.gcov codecoverage.txt transcript.txt success.txt src.zip
+	$(RM) objeto.c objeto.h Gladion map.gv map.png Gladion.testable *.gcda *.gcno *.gcov codecoverage.txt transcript.txt success.txt src.zip

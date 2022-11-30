@@ -1,18 +1,18 @@
 #include <stdbool.h>
 #include <stdio.h>
-#include "object.h"
-#include "match.h"
-#include "reach.h"
-#include "toggle.h"
+#include "objeto.h"
+#include "achar.h"
+#include "chegar.h"
+#include "mudar.h"
 
-int executeTurnOn(void)
+int executarLigar(void)
 {
-   OBJECT *obj = reachableObject("what you want to turn on", params[0]);
+   OBJETO *obj = objetoAlcancavel("what you want to turn on", params[0]);
    if (obj != NULL)
    {
       if (obj == lampOff)
       {
-         toggleLamp();
+         trocarLampada();
       }
       else
       {
@@ -24,14 +24,14 @@ int executeTurnOn(void)
    return 0;
 }
 
-int executeTurnOff(void)
+int executarDesligar(void)
 {
-   OBJECT *obj = reachableObject("what you want to turn off", params[0]);
+   OBJETO *obj = objetoAlcancavel("what you want to turn off", params[0]);
    if (obj != NULL)
    {
       if (obj == lampOn)
       {
-         toggleLamp();
+         trocarLampada();
       }
       else
       {

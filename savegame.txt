@@ -1,0 +1,12 @@
+get club
+get dagger
+attack guard
+attack guard
+attack guard
+attack guard
+attack guard
+attack guard
+attack guard
+get guard
+get field
+look guard

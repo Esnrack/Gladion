@@ -1,40 +1,41 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-#include "expand.h"
-#include "parsexec.h"
-#include "turn.h"
+#include <locale.h>
+#include "expandir.h"
+#include "separaexec.h"
+#include "turno.h"
 
 static char input[100] = "look around";
 
-static bool getFromFP(FILE *fp)
+static bool pegarDoArq(FILE *arq)
 {
-   bool ok = fgets(input, sizeof input, fp) != NULL;
+   bool ok = fgets(input, sizeof input, arq) != NULL;
    if (ok) input[strcspn(input, "\n")] = '\0';
    return ok;
 }
 
-static bool getInput(const char *filename)
+static bool pegarInput(const char *nomeArq)
 {
-   static FILE *fp = NULL;
+   static FILE *arq = NULL;
    bool ok;
-   if (fp == NULL)
+   if (arq == NULL)
    {
-      if (filename != NULL) fp = fopen(filename, "rt");
-      if (fp == NULL) fp = stdin;
+      if (nomeArq != NULL) arq = fopen(nomeArq, "rt");
+      if (arq == NULL) arq = stdin;
    }
-   else if (fp == stdin && filename != NULL)
+   else if (arq == stdin && nomeArq != NULL)
    {
-      FILE *out = fopen(filename, "at");
-      if (out != NULL)
+      FILE *saida = fopen(nomeArq, "at");
+      if (saida != NULL)
       {
-         fprintf(out, "%s\n", input);
-         fclose(out);
+         fprintf(saida, "%s\n", input);
+         fclose(saida);
       }
    }
    printf("\n--> ");
-   ok = getFromFP(fp);
-   if (fp != stdin)
+   ok = pegarDoArq(arq);
+   if (arq != stdin)
    {
       if (ok)
       {
@@ -42,23 +43,24 @@ static bool getInput(const char *filename)
       }
       else
       {
-         fclose(fp);
-         ok = getFromFP(fp = stdin);
+         fclose(arq);
+         ok = pegarDoArq(arq = stdin);
       }
    }
    return ok;
 }
 
-static bool processInput(char *ptr, int size)
+static bool processarInput(char *input, int tam)
 {
-   return turn(parseAndExecute(expand(ptr, size)));
+   return turno(separarExecutar(expandir(input, tam)));
 }
 
-int main(int argc, char *argv[])
+int main()
 {
-   (void)argc;
+   char nomeArq[20] = "savegame.txt";
+   setlocale(LC_ALL, "Portuguese");
    printf("Welcome to Little Cave Adventure.\n");
-   while (processInput(input, sizeof input) && getInput(argv[1]));
+   while (processarInput(input, sizeof input) && pegarInput(nomeArq));
    printf("\nBye!\n");
    return 0;
 }

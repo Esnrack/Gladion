@@ -1,0 +1,1 @@
+extern bool turno(int tempo);

@@ -1,0 +1,314 @@
+#include <stdbool.h>
+#include <stdio.h>
+#include "objeto.h"
+#include "mudar.h"
+
+typedef struct objeto {
+   bool         (*condicao)(void);
+   const char    *descricao;
+   const char   **tags;
+   struct objeto *local;
+   struct objeto *destino;
+   struct objeto *perspectiva;
+   const char    *detalhes;
+   const char    *conteudos;
+   const char    *textoAoIr;
+   const char    *fofoca;
+   int            peso;
+   int            capacidade;
+   int            vida;
+   int            luz;
+   int            impacto;
+   int            confiar;
+   void         (*abrir)(void);
+   void         (*fechar)(void);
+   void         (*trancar)(void);
+   void         (*destrancar)(void);
+} OBJETO;
+
+extern OBJETO objs[];
+
+- clareira
+     descricao "clareira pequena"
+     tags "clareira", "clareira pequena", "pequena clareira"
+     detalhes "uma pequena clareira no meio da floresta, perfeita para descansar"
+     fofoca "uma pequena clareira pacífica, livre de perigos"
+     capacidade 9999
+     luz 100
+
+- floresta1
+     descricao "floresta"
+     tags "floresta"
+     detalhes "uma densa floresta, com árvores em toda a volta"
+     fofoca "cuidado, lá pode haver perigos"
+     capacidade 9999
+     luz 100
+
+- aldeia
+     descricao "aldeia"
+     tags "aldeia", "vila", "vilarejo"
+     detalhes "uma aldeia com algumas poucas casas, sua mãe mora nela e sua irmã..."
+     fofoca "é um bom local para se viver, o único perigo é a proximidade com a caverna"
+     capacidade 9999
+     luz 100
+
+- lago
+     descricao "um lago"
+     tags "lago"
+     detalhes "a água do lago é transparente como vidro, mas mesmo assim não é possível ver o fundo"
+     fofoca "a água do lago é usada pelo aldeões para bebida e banho"
+     capacidade 9999
+     luz 100
+
+- heaven
+     descricao "little heaven"
+     tags        "heaven", "little heaven"
+     detalhes     "Everything looks so peaceful here."
+     fofoca      "It's where all the good adventurers go."
+     capacidade    9999
+     luz       100
+
+- respawn
+     descricao "a respawn portal"
+     tags        "portal", "respawn portal"
+     local    heaven
+     destino field
+     detalhes     "Looks like a gateway into the unknown."
+     textoAoIr      "A bright flash of luz, and you are back in the field."
+     abrir        jaAberta
+
+- heavenEWNS
+     descricao "nothing but peace and quiet"
+     tags        "east", "west", "north", "south"
+     local    heaven
+     textoAoIr      "In this dimension, there are no directions."
+     fofoca      "It's just a compass direction."
+
+- field
+     descricao "an abrir field"
+     tags        "field"
+     detalhes     "The field is a nice and quiet place under a clear blue sky."
+     fofoca      "A lot of tourists go there."
+     capacidade    9999
+     luz       100
+
+- cave
+     descricao "a little cave"
+     tags        "cave"
+     detalhes     "The cave is just a cold, damp, rocky chamber."
+     fofoca      "It's dark in there; bring a lamp!"
+     capacidade    9999
+
+- silver
+     descricao "a silver coin"
+     tags        "silver", "coin", "silver coin"
+     local    field
+     detalhes     "The coin has an eagle on the obverse."
+     fofoca      "Money makes the world go round..."
+     peso      1
+
+- gold
+     descricao "a gold coin"
+     tags        "gold", "coin", "gold coin"
+     local    abrirCaixa
+     detalhes     "The shiny coin seems to be a rare and priceless artefact."
+     fofoca      "Money makes the world go round..."
+     peso      1
+
+- guard
+     descricao "a burly guard"
+     tags        "guard", "burly guard"
+     local    field
+     detalhes     "The guard is a really big fellow."
+     fofoca      "Easy to bribe..."
+     conteudos    "He has"
+     vida      100
+     impacto      -1
+     capacidade    20
+
+- player
+     descricao "yourself"
+     tags        "yourself"
+     local    field
+     detalhes     "You would need a mirror to look at yourself."
+     fofoca      "You're not from around here, are you?"
+     conteudos    "You have"
+     vida      100
+     impacto      -1
+     capacidade    20
+
+- intoCave
+     condicao   { return guard->vida == 0 || silver->local == guard; }
+     descricao "a cave entrance to the east"
+     tags        "east", "entrance"
+     local    field
+     destino  cave
+     detalhes     "The entrance is just a narrow abriring in a small outcrop."
+     textoAoIr      "You walk into the cave."
+     abrir        jaAberta
+
+- intoCaveBlocked
+     condicao   { return guard->vida > 0 && silver->local != guard; }
+     descricao "a cave entrance to the east"
+     tags        "east", "entrance"
+     local    field
+     perspectiva    cave
+     detalhes     "The entrance is just a narrow abriring in a small outcrop."
+     textoAoIr      "The guard stops you from walking into the cave."
+     abrir        jaAberta
+
+- exitCave
+     descricao "an exit to the west"
+     tags        "west", "exit"
+     local    cave
+     destino field
+     detalhes     "Sunluz pours in through an abriring in the cave's wall."
+     textoAoIr      "You walk out of the cave."
+     abrir        jaAberta
+
+- wallField
+     descricao "dense forest all around"
+     tags        "west", "north", "south", "forest"
+     local    field
+     detalhes     "The field is surrounded by trees and undergrowth."
+     textoAoIr      "Dense forest is blocking the way."
+     fofoca      "You cannot go there, it is impenetrable."
+
+- wallCave
+     descricao "solid rock all around"
+     tags        "east", "north", "rock"
+     local    cave
+     detalhes     "Carved in stone is a secret password 'abccb'."
+     textoAoIr      "Solid rock is blocking the way."
+
+- backroom
+     descricao "a backroom"
+     tags        "backroom"
+     detalhes     "The room is dusty and messy."
+     fofoca      "There is something of value to be found there."
+     capacidade    9999
+
+- wallBackroom
+     descricao "solid rock all around"
+     tags        "east", "west", "south", "rock"
+     local    backroom
+     detalhes     "Trendy wallpaper covers the rock walls."
+     textoAoIr      "Solid rock is blocking the way."
+
+- abrirPortaQuarto
+     descricao "an abrir door to the south"
+     tags        "south", "door", "doorway"
+     destino backroom
+     detalhes     "The door is abrir."
+     textoAoIr      "You walk through the door into a backroom."
+     abrir        jaAberta
+     fechar       trocarPortaParaQuarto
+
+- closedDoorToBackroom
+     descricao "a closed door to the south"
+     tags        "south", "door", "doorway"
+     local    cave
+     perspectiva    backroom
+     detalhes     "The door is closed."
+     textoAoIr      "The door is closed."
+     abrir        trocarPortaParaQuarto
+     fechar       jaFechada
+
+- abrirPortaCaverna
+     descricao "an abrir door to the north"
+     tags        "north", "door", "doorway"
+     destino cave
+     detalhes     "The door is abrir."
+     textoAoIr      "You walk through the door into the cave."
+     abrir        jaAberta
+     fechar       trocarPortaParaCaverna
+
+- closedDoorToCave
+     descricao "a closed door to the north"
+     tags        "north", "door", "doorway"
+     local    backroom
+     perspectiva    cave
+     detalhes     "The door is closed."
+     textoAoIr      "The door is closed."
+     abrir        trocarPortaParaCaverna
+     fechar       jaFechada
+
+- abrirCaixa
+     descricao "a wooden box"
+     tags        "box", "wooden box"
+     detalhes     "The box is abrir."
+     fofoca      "You need a key to abrir it."
+     peso      5
+     capacidade    10
+     abrir        jaAberta
+     fechar       trocarCaixa
+     trancar        aindaAberta
+     destrancar      jaAberta
+
+- closedBox
+     descricao "a wooden box"
+     tags        "box", "wooden box"
+     detalhes     "The box is closed."
+     peso      5
+     abrir        trocarCaixa
+     fechar       jaFechada
+     trancar        trocarCaixaTrancada
+     destrancar      jaDestrancada
+
+- lockedBox
+     descricao "a wooden box"
+     tags        "box", "wooden box"
+     local    backroom
+     detalhes     "The box is closed."
+     peso      5
+     abrir        aindaTrancada
+     fechar       jaFechada
+     trancar        jaTrancada
+     destrancar      trocarCaixaTrancada
+
+- keyForBox
+     descricao "a tiny key"
+     tags        "key", "tiny key"
+     local    cave
+     detalhes     "The key is really small and shiny."
+     fofoca      "A small key abrirs a small lock."
+     peso      1
+
+- lampOff
+     descricao "a lamp"
+     tags        "lamp"
+     local    aldeia
+     detalhes     "The lamp is off."
+     fofoca      "Essential in dark areas."
+     peso      5
+
+- lampOn
+     descricao "a lamp"
+     tags        "lamp"
+     detalhes     "The lamp is on."
+     peso      5
+     luz       100
+
+- club
+     descricao "a wooden club"
+     tags        "club", "wooden club"
+     local    field
+     detalhes     "Two feet of solid wood."
+     peso      5
+     impacto      -2
+
+- dagger
+     descricao "a dagger"
+     tags        "dagger"
+     local    field
+     detalhes     "The dagger is very sharp."
+     peso      7
+     impacto      -5
+
+- espada
+     descricao "uma espada"
+     tags        "espada"
+     local    aldeia
+     detalhes     "É uma herança de família."
+     peso      10
+     impacto      -8

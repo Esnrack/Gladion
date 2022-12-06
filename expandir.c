@@ -8,21 +8,21 @@ typedef struct
    const char *expandido;
 } ABREVIACAO;
 
-static int minimo(int x, int y)
+static int minimo(int x, int y) //ve qual o menor
 {
    return x < y ? x : y;
 }
 
-char *expandir(char *input, int bufsize)
+char *expandir(char *input, int bufsize) //expande abreviacoes para sua versao inteira e manda pro input a versao inteira
 {
    static const ABREVIACAO abreviacoes[] =
    {
-      {"n", "go north"},
-      {"s", "go south"},
-      {"w", "go west"},
-      {"e", "go east"},
-      {"inv", "inventory"},
-      {"x A", "examine "},
+      {"n", "ir norte"},
+      {"s", "ir sul"},
+      {"o", "ir oeste"},
+      {"l", "ir leste"},
+      {"inv", "inventario"},
+      {"x A", "examinar "},
       {"A", NULL}
    };
    const ABREVIACAO *ab;

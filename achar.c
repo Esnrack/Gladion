@@ -7,24 +7,24 @@
 
 const char *params[MAX_PARAMS];
 
-static const char *pularEspacos(const char *src)
+static const char *pularEspacos(const char *src) //ignora espacos a mais
 {
    while (isspace(*src)) src++;
    return src;
 }
 
-static const char *acharEspacos(const char *src)
+static const char *acharEspacos(const char *src) //acha quando o espaco e usado
 {
    return *src == '\0' || isspace(*src) ? pularEspacos(src) : NULL;
 }
 
-static const char *acharTerminal(const char *src, char terminal)
+static const char *acharTerminal(const char *src, char terminal) //acha terminal
 {
    return terminal == ' '                    ? acharEspacos(src) :
           tolower(*src) == tolower(terminal) ? src + 1          : NULL;
 }
 
-static const char *acharTag(const char *src, const char *tag, bool noFim)
+static const char *acharTag(const char *src, const char *tag, bool noFim) //achar tag de algum objeto
 {
    while (src != NULL && *tag != '\0')
    {
@@ -33,7 +33,7 @@ static const char *acharTag(const char *src, const char *tag, bool noFim)
    return noFim && src != NULL && *pularEspacos(src) != '\0' ? NULL : src;
 }
 
-static const char *acharParam(const char *src, const char **par, bool loose)
+static const char *acharParam(const char *src, const char **par, bool loose) //acha os parametros definidos
 {
    const char *restoDoSrc = loose ? src + strlen(src) : NULL;
    OBJETO *obj;
@@ -57,7 +57,7 @@ static const char *acharParam(const char *src, const char **par, bool loose)
    return restoDoSrc;
 }
 
-bool acharComando(const char *src, const char *padrao)
+bool acharComando(const char *src, const char *padrao) //acha os comandos
 {
    const char **par;
    for (par = params; par < params + MAX_PARAMS; par++)

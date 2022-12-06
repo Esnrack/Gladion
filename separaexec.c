@@ -11,6 +11,7 @@
 #include "onoff.h"
 #include "falar.h"
 #include "ataque.h"
+#include "dano.h"
 
 typedef struct
 {
@@ -18,67 +19,69 @@ typedef struct
    int (*funcao)(void);
 } COMANDO;
 
-static int executarSair(void)
+static int executarSair(void) //sair do jogo
 {
    return -1;
 }
 
-static int executarNaoAchou(void)
+static int executarNaoAchou(void) //caso nao ache a funcao
 {
    const char *src = *params;
    int tam;
    for (tam = 0; src[tam] != '\0' && !isspace(src[tam]); tam++);
-   if (tam > 0) printf("I don't know how to '%.*s'.\n", tam, src);
+   if (tam > 0) printf("Eu nao sei como '%.*s'.\n", tam, src);
    return 0;
 }
 
-static int executeWait(void)
+static int executarEspera(void) //caso o player queira esperar
 {
-   printf("Some time passes...\n");
+   printf("Um tempo passa...\n");
    return 1;
 }
 
-int separarExecutar(const char *input)
+int separarExecutar(const char *input) //executa os comandos
 {
    static const COMANDO comandos[] =
    {
-      { "quit"                , executarSair      },
-      { "look"                , executarOlharVolta},
-      { "look around"         , executarOlharVolta},
-      { "look at A"           , executarOlhar     },
-      { "look A"              , executarOlhar     },
-      { "examine A"           , executarOlhar     },
-      { "go to A"             , executarIr        },
-      { "go A"                , executarIr        },
-      { "get A from B"        , executarPegarDe   },
-      { "get A"               , executarPegar     },
-      { "put A in B"          , executarColocarEm },
-      { "drop A in B"         , executarColocarEm },
-      { "drop A"              , executarLargar    },
-      { "ask A from B"        , executarPedirPara },
-      { "ask A"               , executarPedir     },
-      { "give A to B"         , executarDarPara   },
-      { "give A"              , executarDar       },
-      { "inventory"           , executarInventario},
-      { "open A"              , executeAbrir      },
-      { "close A"             , executeFechar     },
-      { "lock A"              , executeTrancar    },
-      { "unlock A"            , executeDestrancar },
-      { "turn on A"           , executarLigar     },
-      { "turn off A"          , executarDesligar  },
-      { "turn A on"           , executarLigar     },
-      { "turn A off"          , executarDesligar  },
-      { "talk with B about A" , executarFalarPara },
-      { "talk about A with B" , executarFalarPara },
-      { "talk about A"        , executarFala      },
-      { "talk A"              , executarFala      },
-      { "attack with B"       , executarAtaque    },
-      { "attack A with B"     , executarAtaque    },
-      { "attack A"            , executarAtaque    },
-      { "wait"                , executeWait       },
-      { "A"                   , executarNaoAchou  }
+      { "sair"                , executarSair      },
+      { "olhar"               , executarOlharVolta},
+      { "olhar volta"         , executarOlharVolta},
+      { "olhar para A"        , executarOlhar     },
+      { "olhar A"             , executarOlhar     },
+      { "examinar A"          , executarOlhar     },
+      { "ir para A"           , executarIr        },
+      { "ir A"                , executarIr        },
+      { "pegar A de B"        , executarPegarDe   },
+      { "pegar A"             , executarPegar     },
+      { "colocar A em B"      , executarColocarEm },
+      { "largar A em B"       , executarColocarEm },
+      { "largar A"            , executarLargar    },
+      { "pedir A para B"      , executarPedirPara },
+      { "pedir A"             , executarPedir     },
+      { "dar A para B"        , executarDarPara   },
+      { "dar A"               , executarDar       },
+      { "inventario"          , executarInventario},
+      { "abrir A"             , executarAbrir     },
+      { "fechar A"            , executarFechar    },
+      { "trancar A"           , executarTrancar   },
+      { "destrancar A"        , executarDestrancar},
+      { "acender A"           , executarLigar     },
+      { "apagar A"            , executarDesligar  },
+      { "ligar A"             , executarLigar     },
+      { "desligar A"          , executarDesligar  },
+      { "falar com B sobre A" , executarFalarPara },
+      { "falar sobre A com B" , executarFalarPara },
+      { "falar sobre A"       , executarFala      },
+      { "falar A"             , executarFala      },
+      { "atacar com B"        , executarAtaque    },
+      { "atacar A com B"      , executarAtaque    },
+      { "atacar A"            , executarAtaque    },
+      { "comer A"             , executarRecuperar },
+      { "vida"                , executarVida      },
+      { "esperar"             , executarEspera    },
+      { "A"                   , executarNaoAchou  } //aqui cai qualquer coisa que nao saiba o que e
    };
    const COMANDO *cmd;
-   for (cmd = comandos; !acharComando(input, cmd->padrao); cmd++);
+   for (cmd = comandos; !acharComando(input, cmd->padrao); cmd++); //acha os comandos, mesmo que com letro maiuscula
    return (*cmd->funcao)();
 }

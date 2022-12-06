@@ -7,29 +7,29 @@
 #include "chegar.h"
 #include "dano.h"
 
-static OBJETO *vitimaAqui()
+static OBJETO *vitimaAqui() //verifica se o alvo esta aqui
 {
    OBJETO *vitima = atorAqui();
    if (vitima == NULL)
    {
-      printf("There is nobody here to attack.\n");
+      printf("Nao ha ninguem aqui para atacar.\n");
    }
    return vitima;
 }
 
-int executarAtaque(void)
+int executarAtaque(void) //ve se esta tudo de acordo para executar o ataque e dar dano
 {
    OBJETO *vitima =
-      *params[0] == '\0' ? vitimaAqui()
-                         : objetoAlcancavel("who to attack", params[0]);
+      *params[0] == '\0' ? vitimaAqui() //procura quem deve atacar
+                         : objetoAlcancavel("quem atacar", params[0]);
    if (vitima != NULL)
    {
       OBJETO *arma =
-         *params[1] == '\0' ? pegarMelhorArma(player)
-                            : pegarPosse(player, "wield", params[1]);
+         *params[1] == '\0' ? pegarMelhorArma(player) //procura a melhor arma
+                            : pegarPosse(player, "empunhar", params[1]);
       if (arma != NULL)
       {
-         darDano(player, arma, vitima);
+         darDano(player, arma, vitima); //da dano na vitima
          return 1;
       }
    }

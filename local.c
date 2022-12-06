@@ -5,45 +5,45 @@
 #include "achar.h"
 #include "nome.h"
 
-int executarOlharVolta(void)
+int executarOlharVolta(void) //olha ao redor
 {
-   if (estaAceso(player->local))
+   if (estaAceso(player->local)) //verifica se esta claro
    {
-      printf("You are in %s.\n", player->local->descricao);
+      printf("Voce esta em %s.\n", player->local->descricao);
    }
    else
    {
-      printf("It is very dark in here.\n");
+      printf("E muito escuro aqui.\n");
    }
-   listaObjetosNoLocal(player->local);
+   listaObjetosNoLocal(player->local); //mostra a lista de objetos no local
    return 1;
 }
 
-int executarOlhar(void)
+int executarOlhar(void) //olha para algo especifico
 {
-   OBJETO *obj = estaVisivel("what you want to look at", params[0]);
+   OBJETO *obj = estaVisivel("o que voce que olhar", params[0]);
    switch (verDistancia(player, obj))
    {
    case distContidoAqui:
-      printf("Hard to see, try to get it first.\n");
+      printf("Dificil de ver, tente pegar isso primeiro.\n");
       return 0;
    case distLa:
-      printf("Too far away, move closer please.\n");
+      printf("Muito longe, va mais perto por favor.\n");
       return 0;
    case distAquiNao:
-      printf("You don't see any %s here.\n", params[0]);
+      printf("Voce nao ve nenhum %s aqui.\n", params[0]);
       return 0;
    case distObjetoDesconhecido:
-      // already handled by estaVisivel
+      //ja visto em estaVisivel
       return 0;
    default:
-      printf("%s\n", obj->detalhes);
-      listaObjetosNoLocal(obj);
+      printf("%s\n", obj->detalhes); //msotra os detalhes
+      listaObjetosNoLocal(obj); //msotra os objeto contidos, se ha algum
       return 1;
    }
 }
 
-static void moverPlayer(OBJETO *passagem)
+static void moverPlayer(OBJETO *passagem) //move o player entre os nodos
 {
    printf("%s\n", passagem->textoAoIr);
    if (passagem->destino != NULL)
@@ -54,19 +54,19 @@ static void moverPlayer(OBJETO *passagem)
    }
 }
 
-int executarIr(void)
+int executarIr(void) //tenta ir para algum lugar
 {
-   OBJETO *obj = estaVisivel("where you want to go", params[0]);
+   OBJETO *obj = estaVisivel("onde voce quer ir", params[0]);
    switch (verDistancia(player, obj))
    {
    case distLa:
       moverPlayer(verPassagem(player->local, obj));
       return 1;
    case distAquiNao:
-      printf("You don't see any %s here.\n", params[0]);
+      printf("Voce nao ve nenhum %s aqui.\n", params[0]);
       return 0;
    case distObjetoDesconhecido:
-      // already handled by estaVisivel
+      //ja visto em estaVisivel
       return 0;
    default:
       moverPlayer(obj);

@@ -6,8 +6,10 @@
 typedef struct objeto {
    bool         (*condicao)(void);
    const char    *descricao;
+   const char    *oculto;
    const char   **tags;
    struct objeto *local;
+   struct objeto *origem;
    struct objeto *destino;
    struct objeto *perspectiva;
    const char    *detalhes;
@@ -17,6 +19,7 @@ typedef struct objeto {
    int            peso;
    int            capacidade;
    int            vida;
+   int            vidaMaxima;
    int            luz;
    int            impacto;
    int            confiar;
@@ -24,9 +27,95 @@ typedef struct objeto {
    void         (*fechar)(void);
    void         (*trancar)(void);
    void         (*destrancar)(void);
+   bool            (*comida)(void);
+   int            passou;
 } OBJETO;
 
 extern OBJETO objs[];
+
+- mae
+     descricao "sua mae"
+     tags        "mae", "mamae", "minha mae"
+     local    aldeia
+     detalhes     "Ela ficou muito abalada com o sequestro de Muriel."
+     fofoca      "Ela teve que cuidar dos filhos sozinha"
+     conteudos    "Ela tem"
+     vida      40
+     impacto      0
+     capacidade    15
+     confiar 10
+
+- chefeAldeia
+     descricao "o chefe da aldeia"
+     tags        "chefe", "chefe da aldeia", "adam"
+     local    aldeia
+     detalhes     "Um senhor de mais idade."
+     fofoca      "Ele governa uma pequena aldeia"
+     conteudos    "Ele tem"
+     vida      40
+     impacto      0
+     capacidade    10
+
+- irmaMuriel
+     descricao "sua irma Muriel"
+     tags        "irma", "muriel", "irma muriel"
+     local    temploBoss
+     detalhes     "Uma jovem mulher de olhos e cabelos castanhos."
+     fofoca      "Ela foi sequestrada"
+     conteudos    "Ela tem"
+     vida      40
+     impacto      0
+     capacidade    10
+     confiar 10
+
+- gladion
+     descricao "Gladion, o Maligno"
+     tags        "gladion", "maligno", "o maligno"
+     local    temploBoss
+     detalhes     "Uma figura aterradora, sua mera presenca ja lhe causa calafrios."
+     fofoca      "Ele e o mal em pessoa"
+     conteudos    "Ele tem"
+     vida      150
+     capacidade    30
+     confiar -1
+
+- temploBoss
+     descricao "templo antigo"
+     tags "templo", "templo antigo"
+     detalhes "Um lugar antigo, quem o construiu ja nao esta mais aqui"
+     fofoca "Ouvi falar que o maligno Gladion habita esse local"
+     capacidade 9999
+     luz 100
+
+- delimitacaoTemplo
+     descricao "paredes deterioradas ao redor"
+     tags         "norte", "sul", "oeste", "paredes"
+     local    temploBoss
+     textoAoIr      "Cuidado, as paredes sao frageis."
+
+- passagemTemploParaFlorestaLiberada
+     condicao { return gladion->vida <= 0;}
+     descricao "uma porta para floresta a leste"
+     tags        "leste", "porta"
+     local    temploBoss
+     destino    floresta5
+     detalhes     "Voce ve uma luz muito fraca dessa direcao."
+     textoAoIr      "Voce sai do covil do monstro."
+     abrir        jaAberta
+
+- passagemTemploParaFlorestaBloqueada
+     condicao { return gladion->vida > 0;}
+     descricao "uma porta fechada a leste"
+     tags        "leste", "porta"
+     local    temploBoss
+     perspectiva    floresta5
+     detalhes     "Voce ve uma luz muito fraca dessa direcao."
+     textoAoIr      "O monstro impede sua passagem."
+     abrir        jaAberta
+
+- direcoes
+     tags "norte", "sul", "leste", "oeste"
+     fofoca      "E apenas uma direcao."
 
 - clareira
      descricao "clareira pequena"
@@ -36,6 +125,21 @@ extern OBJETO objs[];
      capacidade 9999
      luz 100
 
+- delimitacaoClareira
+     descricao "arvores grandes ao redor"
+     tags         "norte", "oeste", "leste", "arvores"
+     local    clareira
+     textoAoIr      "E uma floresta densa de mais para passar."
+
+- passagemClareiraParaFloresta2
+     descricao "uma floresta a sul"
+     tags        "sul"
+     local    clareira
+     destino floresta2
+     detalhes     "Voce ve uma vasta quantidade de árvores e vegetação em volta."
+     textoAoIr      "Voce vai a floresta."
+     abrir        jaAberta
+
 - floresta1
      descricao "floresta"
      tags "floresta"
@@ -43,6 +147,257 @@ extern OBJETO objs[];
      fofoca "cuidado, lá pode haver perigos"
      capacidade 9999
      luz 100
+
+- delimitacaoFloresta1
+     descricao "arvores grandes ao redor"
+     tags         "norte", "oeste", "arvores"
+     local    floresta1
+     textoAoIr      "E uma floresta densa de mais para passar."
+
+- passagemFloresta1ParaLago
+     descricao "um lago a sul"
+     tags        "sul"
+     local    floresta1
+     destino lago
+     detalhes     "Voce ve uma porcao de agua a vista com vegetacao em volta."
+     textoAoIr      "Voce vai ao lago."
+     abrir        jaAberta
+
+- passagemFloresta1ParaFloresta2
+     descricao "uma floresta a leste"
+     tags        "leste"
+     local    floresta1
+     destino floresta2
+     detalhes     "Voce ve uma vasta quantidade de árvores e vegetação em volta."
+     textoAoIr      "Voce vai a floresta."
+     abrir        jaAberta
+
+- floresta2
+     descricao "floresta"
+     tags "floresta"
+     detalhes "uma densa floresta, com árvores em toda a volta"
+     capacidade 9999
+     luz 100
+
+- delimitacaoFloresta2
+     descricao "arvores grandes ao redor"
+     tags         "sul", "arvores"
+     local    floresta2
+     textoAoIr      "E uma floresta densa de mais para passar."
+
+- passagemFloresta2ParaClareira
+     descricao "uma clareira a norte"
+     tags        "norte"
+     local    floresta2
+     destino clareira
+     detalhes     "Voce ve uma clareira bem iluminada e vegetação em volta."
+     textoAoIr      "Voce vai a clareira."
+     abrir        jaAberta
+
+- passagemFloresta2ParaFloresta1
+     descricao "uma floresta a oeste"
+     tags        "oeste"
+     local    floresta2
+     destino floresta1
+     detalhes     "Voce ve uma vasta quantidade de árvores e vegetação em volta."
+     textoAoIr      "Voce vai a floresta."
+     abrir        jaAberta
+
+- passagemFloresta2ParaFloresta3
+     descricao "uma floresta a leste"
+     tags        "leste"
+     local    floresta2
+     destino floresta3
+     detalhes     "Voce ve uma vasta quantidade de árvores e vegetação em volta."
+     textoAoIr      "Voce vai a floresta."
+     abrir        jaAberta
+     
+- floresta3
+     descricao "floresta"
+     tags "floresta"
+     detalhes "uma densa floresta, com árvores em toda a volta"
+     capacidade 9999
+     luz 100
+
+- delimitacaoFloresta3
+     descricao "arvores grandes ao redor"
+     tags         "norte", "leste", "arvores"
+     local    floresta3
+     textoAoIr      "E uma floresta densa de mais para passar."
+
+- passagemFloresta3ParaFloresta2
+     descricao "uma floresta a oeste"
+     tags        "oeste"
+     local    floresta3
+     destino floresta2
+     detalhes     "Voce ve uma vasta quantidade de árvores e vegetação em volta."
+     textoAoIr      "Voce vai a floresta."
+     abrir        jaAberta
+
+- passagemFloresta3ParaFloresta6
+     descricao "uma floresta a sul"
+     tags        "sul"
+     local    floresta3
+     destino floresta6
+     detalhes     "Voce ve uma vasta quantidade de árvores e vegetação em volta."
+     textoAoIr      "Voce vai a floresta."
+     abrir        jaAberta
+     
+- floresta4
+     descricao "floresta"
+     tags "floresta"
+     detalhes "uma densa floresta, com árvores em toda a volta"
+     capacidade 9999
+     luz 100
+
+- delimitacaoFloresta4
+     descricao "arvores grandes ao redor"
+     tags         "norte", "arvores"
+     local    floresta4
+     textoAoIr      "E uma floresta densa de mais para passar."
+
+- passagemFloresta4ParaFloresta6
+     descricao "uma floresta a leste"
+     tags        "leste"
+     local    floresta4
+     destino floresta6
+     detalhes     "Voce ve uma vasta quantidade de árvores e vegetação em volta."
+     textoAoIr      "Voce vai a floresta."
+     abrir        jaAberta
+
+- passagemFloresta4ParaLago
+     descricao "um lago a oeste"
+     tags        "oeste"
+     local    floresta4
+     destino lago
+     detalhes     "Voce ve uma porcao de agua a vista com vegetacao em volta."
+     textoAoIr      "Voce vai ao lago."
+     abrir        jaAberta
+
+- passagemFloresta4ParaFloresta5
+     descricao "uma floresta a sul"
+     tags        "sul"
+     local    floresta4
+     destino floresta5
+     detalhes     "Voce ve uma vasta quantidade de árvores e vegetação em volta."
+     textoAoIr      "Voce vai a floresta."
+     abrir        jaAberta
+     
+- floresta5
+     descricao "floresta"
+     tags "floresta"
+     detalhes "na parede existe um grande portão mágico misterioso"
+     textoAoIr "um grande portão mágico bloquia o caminho."
+     capacidade 9999
+     luz 100
+
+- delimitacaoFloresta5
+     descricao "arvores grandes ao redor"
+     tags         "sul", "leste", "arvores"
+     local    floresta5
+     textoAoIr      "E uma floresta densa de mais para passar."
+
+- passagemFloresta5ParaTemploTrancada
+     tags        "oeste", "fechadura", "fechaduras", "porta", "templo"
+     local    floresta5
+     descricao "uma porta de pedra para o templo a oeste"
+     detalhes     "Voce ve 3 buracos de fechadura."
+     textoAoIr "Voce nao consegue atravessar rocha solida."
+     abrir        aindaTrancada
+     fechar       jaFechada
+     trancar        jaTrancada
+     destrancar      trocarPortaDoTemploTrancada
+
+- passagemFloresta5ParaTemploDestrancada
+     descricao "uma porta aberta a oeste"
+     tags        "templo", "oeste", "porta"
+     detalhes     "A porta para o templo esta aberta."
+     textoAoIr "Voce entra no local da ultima batalha."
+     destino temploBoss
+     abrir        jaAberta
+     fechar       aindaAberta
+     trancar        aindaAberta
+     destrancar      jaAberta
+
+- passagemFloresta5ParaFloresta4
+     descricao "uma floresta a norte"
+     tags        "norte"
+     local    floresta5
+     destino floresta4
+     detalhes     "Voce ve uma vasta quantidade de árvores e vegetação em volta."
+     textoAoIr      "Voce vai a floresta."
+     abrir        jaAberta
+     
+- floresta6
+     descricao "floresta"
+     tags "floresta"
+     detalhes "uma densa floresta, com árvores em toda a volta, com um item no chão"
+     capacidade 9999
+     luz 100
+
+- delimitacaoFloresta6
+     descricao "arvores grandes ao redor"
+     tags         "leste", "arvores"
+     local    floresta6
+     textoAoIr      "E uma floresta densa de mais para passar."
+
+- passagemFloresta6ParaFloresta3
+     descricao "uma floresta a norte"
+     tags        "norte"
+     local    floresta6
+     destino floresta3
+     detalhes     "Voce ve uma vasta quantidade de árvores e vegetação em volta."
+     textoAoIr      "Voce vai a floresta."
+     abrir        jaAberta
+
+- passagemFloresta6ParaFloresta4
+     descricao "uma floresta a oeste"
+     tags        "oeste"
+     local    floresta6
+     destino floresta4
+     detalhes     "Voce ve uma vasta quantidade de árvores e vegetação em volta."
+     textoAoIr      "Voce vai a floresta."
+     abrir        jaAberta
+
+- passagemFloresta6ParaFloresta7
+     descricao "uma floresta a sul"
+     tags        "sul"
+     local    floresta6
+     destino floresta7
+     detalhes     "Voce ve uma vasta quantidade de árvores e vegetação em volta."
+     textoAoIr      "Voce vai a floresta."
+     abrir        jaAberta
+	 
+- floresta7
+     descricao "floresta"
+     tags "floresta"
+     detalhes "uma densa floresta, com árvores em toda a volta"
+     capacidade 9999
+     luz 100
+
+- delimitacaoFloresta7
+     descricao "arvores grandes ao redor"
+     tags         "oeste", "leste", "arvores"
+     local    floresta7
+     textoAoIr      "E uma floresta densa de mais para passar."
+
+- passagemFloresta7ParaFloresta6
+     descricao "uma floresta a norte"
+     tags        "norte"
+     local    floresta7
+     destino floresta6
+     detalhes     "Voce ve uma vasta quantidade de árvores e vegetação em volta."
+     textoAoIr      "Voce vai a floresta."
+     abrir        jaAberta
+
+- passagemFlorestaParaCaverna
+     descricao "uma entrada de caverna ao sul"
+     tags        "sul"
+     local    floresta7
+     destino    caverna2
+     detalhes     "Uma entrada escura."
+     textoAoIr      "Voce entra na caverna."
+     abrir        jaAberta
 
 - aldeia
      descricao "aldeia"
@@ -52,263 +407,527 @@ extern OBJETO objs[];
      capacidade 9999
      luz 100
 
+- delimitacaoAldeia
+     descricao "arvores grandes ao redor"
+     tags        "oeste", "norte", "arvores"
+     local    aldeia
+     textoAoIr      "E uma floresta densa de mais para passar."
+
+- passagemAldeiaParaLago
+     descricao "um lago a leste"
+     tags        "leste"
+     local    aldeia
+     destino lago
+     detalhes     "Voce ve uma porcao de agua a vista com vegetacao em volta."
+     textoAoIr      "Voce vai ao lago."
+     abrir        jaAberta
+
+- passagemAldeiaParaCavernaBloqueada
+     condicao   { return guarda->vida > 0 && ouro->local != guarda; }
+     descricao "uma entrada para uma caverna ao sul"
+     tags        "sul", "entrada", "entrada para caverna"
+     local    aldeia
+     perspectiva    caverna1
+     detalhes     "Voce ve uma entrada estreita."
+     textoAoIr      "O guarda lhe impede de passar e diz: Aqui nao e lugar para voce."
+     abrir        jaAberta
+
+- passagemAldeiaParaCavernaLiberada
+     condicao   { return guarda->vida == 0 || ouro->local == guarda; }
+     descricao "uma entrada para uma caverna ao sul"
+     tags        "sul", "entrada", "entrada para caverna"
+     local    aldeia
+     destino    caverna1
+     detalhes     "Voce ve uma entrada estreita."
+     textoAoIr      "Voce entra na caverna."
+     abrir        jaAberta
+
+- guarda
+     descricao "um guarda grande"
+     tags        "guarda", "guarda grande"
+     local    aldeia
+     detalhes     "O guarda realmente e grande."
+     fofoca      "Gosta de ter a mao molhada"
+     conteudos    "Ele tem"
+     vida      100
+     impacto      -1
+     capacidade    20
+
 - lago
      descricao "um lago"
      tags "lago"
-     detalhes "a água do lago é transparente como vidro, mas mesmo assim não é possível ver o fundo"
-     fofoca "a água do lago é usada pelo aldeões para bebida e banho"
+     detalhes "A agua do lago e transparente como vidro, mas mesmo assim nao e possevel ver o fundo"
+     fofoca "a agua do lago e usada pelo aldeoes para bebida e banho"
      capacidade 9999
      luz 100
 
-- heaven
-     descricao "little heaven"
-     tags        "heaven", "little heaven"
-     detalhes     "Everything looks so peaceful here."
-     fofoca      "It's where all the good adventurers go."
+- delimitacaoLago
+     descricao "arvores grandes ao redor"
+     tags         "sul", "arvores"
+     local    lago
+     textoAoIr      "E uma floresta densa de mais para passar."
+
+- passagemLagoParaFloresta4
+     descricao "uma floresta a leste"
+     tags        "leste"
+     local    lago
+     destino floresta4
+     detalhes     "Voce ve uma vasta quantidade de árvores e vegetação em volta."
+     textoAoIr      "Voce vai a floresta."
+     abrir        jaAberta
+
+- passagemLagoParaFloresta1
+     descricao "uma floresta a norte"
+     tags        "norte"
+     local    lago
+     destino floresta1
+     detalhes     "Voce ve uma vasta quantidade de árvores e vegetação em volta."
+     textoAoIr      "Voce vai a floresta."
+     abrir        jaAberta
+
+- passagemLagoParaAldeia
+     descricao "uma aldeia a oeste"
+     tags        "oeste"
+     local    lago
+     destino aldeia
+     detalhes     "Voce ve uma aldeia com poucas casas."
+     textoAoIr      "Voce vai a aldeia."
+     abrir        jaAberta
+
+- deserto
+     descricao "deserto"
+     tags "deserto"
+     detalhes "um escaldante deserto, com apenas areia em volta"
+     fofoca "Dizem que ha algo escondido la"
+     capacidade 9999
+     luz 100
+
+- delimitacaoDeserto
+     descricao "areia escaldante ao redor"
+     tags         "norte", "sul", "leste"
+     local    deserto
+     textoAoIr      "O calor é demais para ir além."
+
+- passagemDesertoParaCaverna
+     descricao "uma passagem para caverna a oeste"
+     tags "oeste", "passagem"
+     local deserto
+     destino caverna2
+     textoAoIr      "O calor vai passando aos poucos enquanto voce volta para a caverna."
+     detalhes "A sombra da caverna e tentadora"
+
+- covil
+     descricao "covil de uma criatura"
+     tags "covil"
+     detalhes "Um lugar fetido, o cheiro de carnica preenche suas narinas."
+     capacidade 9999
+     luz 0
+
+- delimitacaoCovil
+     descricao "cristais estranhos ao redor"
+     tags         "norte", "sul", "cristais"
+     local    covil
+     textoAoIr      "os cristais na parede sao muito duros para perfurar ou escavar."     
+
+- passagemCovilParaCaverna1Liberada
+     condicao { return monstro->vida <= 0;}
+     descricao "um caminho para oeste"
+     tags        "oeste"
+     local    covil
+     destino    caverna1
+     detalhes     "Voce ve uma luz muito fraca dessa direcao."
+     textoAoIr      "Voce sai do covil do monstro."
+     abrir        jaAberta
+
+- passagemCovilParaCaverna1Bloqueada
+     condicao { return monstro->vida > 0;}
+     descricao "um caminho para oeste"
+     tags        "oeste"
+     local    covil
+     perspectiva    caverna1
+     detalhes     "Voce ve uma luz muito fraca dessa direcao."
+     textoAoIr      "O monstro impede sua passagem."
+     abrir        jaAberta
+
+- passagemCovilParaCaverna2Liberada
+     condicao { return monstro->vida <= 0;}
+     descricao "um caminho para leste"
+     tags        "leste"
+     local    covil
+     destino    caverna2
+     detalhes     "Voce ve uma luz muito fraca dessa direcao."
+     textoAoIr      "Voce sai do covil do monstro."
+     abrir        jaAberta
+
+- passagemCovilParaCaverna2Bloqueada
+     condicao { return monstro->vida > 0;}
+     descricao "um caminho para leste"
+     tags        "leste"
+     local    covil
+     perspectiva    caverna2
+     detalhes     "Voce ve uma luz muito fraca dessa direcao."
+     textoAoIr      "O monstro impede sua passagem."
+     abrir        jaAberta
+
+- caverna1
+     descricao "caverna"
+     tags        "caverna da aldeia"
+     detalhes     "um lugar umido e escuro."
+     fofoca "Ouvi dizer que alguém desapareceu la, entao um guarda vigia a entrada."
+     capacidade 9999
+     luz 0
+
+- delimitacaoCaverna1
+     descricao "rocha solida ao redor"
+     tags         "rocha", "sul", "oeste"
+     local    caverna1
+     textoAoIr      "Voce nao consegue atravessar rocha solida."
+
+- passagemCavernaParaAldeia
+     descricao "uma saida da caverna ao norte"
+     tags        "norte", "saida", "saida da caverna"
+     local    caverna1
+     destino    aldeia
+     detalhes     "A luz do sol entra na caverna."
+     textoAoIr      "Voce volta para a aldeia."
+     abrir        jaAberta
+
+- passagemCaverna1ParaCovil
+     descricao "uma entrada escura a leste"
+     tags        "leste"
+     local    caverna1
+     destino    covil
+     detalhes     "Voce sente um cheiro putrido vindo dessa direcao."
+     textoAoIr      "Voce sabe que esta entrando em um lugar esquecido pelos deuses."
+     abrir        jaAberta
+     
+- caverna2
+     descricao "caverna"
+     tags        "caverna"
+     detalhes     "um lugar umido e escuro."
+     capacidade 9999
+     luz 0
+
+- delimitacaoCaverna2
+     descricao "rocha solida ao redor"
+     tags         "rocha", "sul"
+     local    caverna2
+     textoAoIr      "Voce nao consegue atravessar rocha solida."
+
+- passagemCavernaParaDesertoTravada
+     tags        "leste", "fechadura"
+     local    caverna2
+     oculto "parede de pedra"
+     detalhes     "Voce ve uma pequena fechadura."
+     textoAoIr "Voce nao consegue atravessar rocha solida."
+     abrir        aindaTrancada
+     fechar       jaFechada
+     trancar        jaTrancada
+     destrancar      trocarParedeTrancada
+
+- passagemCavernaParaDesertoLiberada
+     descricao "uma passagem a leste"
+     tags        "passagem", "leste", "fechadura"
+     detalhes     "A passagem secreta esta aberta."
+     textoAoIr "Voce anda por uma longa passagem e chega em um deserto."
+     destino deserto
+     abrir        jaAberta
+     fechar       aindaAberta
+     trancar        aindaAberta
+     destrancar      jaAberta
+
+- passagemCaverna2ParaCovil
+     descricao "uma entrada escura a oeste"
+     tags        "oeste", "entrada"
+     local    caverna2
+     destino    covil
+     detalhes     "Voce sente um cheiro putrido vindo dessa direcao."
+     textoAoIr      "Voce sabe que esta entrando em um lugar esquecido pelos deuses."
+     abrir        jaAberta
+
+- passagemCavernaParaFloresta
+     descricao "uma saida da caverna ao norte"
+     tags        "norte", "saida"
+     local    caverna2
+     destino    floresta7
+     detalhes     "A luz do sol entra na caverna."
+     textoAoIr      "Voce entra na floresta."
+     abrir        jaAberta
+
+- monstro
+     descricao "uma criatura enorme"
+     tags        "monstro", "criatura"
+     local    covil
+     detalhes     "Uma criatura com garras grandes e dentes afiados."
+     conteudos    "Ele tem"
+     vida      150
+     impacto      -1
+     capacidade    60
+
+- paraiso
+     descricao "paraiso"
+     tags        "paraiso"
+     detalhes     "Tudo parece pacifico aqui."
+     fofoca      "E para onde todos os bons aventureiros vao."
      capacidade    9999
      luz       100
 
 - respawn
-     descricao "a respawn portal"
-     tags        "portal", "respawn portal"
-     local    heaven
-     destino field
-     detalhes     "Looks like a gateway into the unknown."
-     textoAoIr      "A bright flash of luz, and you are back in the field."
+     descricao "um portal para reviver"
+     tags        "portal"
+     local    paraiso
+     destino aldeia
+     detalhes     "Parece uma passagem para o desconhecido."
+     textoAoIr      "Voce volta ao plano terreno."
      abrir        jaAberta
 
-- heavenEWNS
-     descricao "nothing but peace and quiet"
-     tags        "east", "west", "north", "south"
-     local    heaven
-     textoAoIr      "In this dimension, there are no directions."
-     fofoca      "It's just a compass direction."
+- paraisoLONS
+     descricao "nada, apenas paz e silencio"
+     tags        "leste", "oeste", "norte", "sul"
+     local    paraiso
+     textoAoIr      "Nessa dimensao nao ha direcoes."
+     fofoca      "E apenas uma direcao na bussola."
 
-- field
-     descricao "an abrir field"
-     tags        "field"
-     detalhes     "The field is a nice and quiet place under a clear blue sky."
-     fofoca      "A lot of tourists go there."
-     capacidade    9999
-     luz       100
-
-- cave
-     descricao "a little cave"
-     tags        "cave"
-     detalhes     "The cave is just a cold, damp, rocky chamber."
-     fofoca      "It's dark in there; bring a lamp!"
-     capacidade    9999
-
-- silver
-     descricao "a silver coin"
-     tags        "silver", "coin", "silver coin"
-     local    field
-     detalhes     "The coin has an eagle on the obverse."
-     fofoca      "Money makes the world go round..."
+- ouro
+     descricao "uma moeda de ouro"
+     tags        "ouro", "moeda", "moeda de ouro"
+     local    goblin
+     detalhes     "Uma moeda brilhante."
+     fofoca      "O dinheiro faz o mundo girar..."
      peso      1
-
-- gold
-     descricao "a gold coin"
-     tags        "gold", "coin", "gold coin"
-     local    abrirCaixa
-     detalhes     "The shiny coin seems to be a rare and priceless artefact."
-     fofoca      "Money makes the world go round..."
-     peso      1
-
-- guard
-     descricao "a burly guard"
-     tags        "guard", "burly guard"
-     local    field
-     detalhes     "The guard is a really big fellow."
-     fofoca      "Easy to bribe..."
-     conteudos    "He has"
-     vida      100
-     impacto      -1
-     capacidade    20
 
 - player
-     descricao "yourself"
-     tags        "yourself"
-     local    field
-     detalhes     "You would need a mirror to look at yourself."
-     fofoca      "You're not from around here, are you?"
-     conteudos    "You have"
+     descricao "voce"
+     tags        "eu"
+     local    aldeia
+     detalhes     "Voce devia ser olhar no espelho."
+     fofoca      "Voce esta atras de sua irma, nao?"
+     conteudos    "Voce tem"
      vida      100
      impacto      -1
      capacidade    20
 
-- intoCave
-     condicao   { return guard->vida == 0 || silver->local == guard; }
-     descricao "a cave entrance to the east"
-     tags        "east", "entrance"
-     local    field
-     destino  cave
-     detalhes     "The entrance is just a narrow abriring in a small outcrop."
-     textoAoIr      "You walk into the cave."
-     abrir        jaAberta
-
-- intoCaveBlocked
-     condicao   { return guard->vida > 0 && silver->local != guard; }
-     descricao "a cave entrance to the east"
-     tags        "east", "entrance"
-     local    field
-     perspectiva    cave
-     detalhes     "The entrance is just a narrow abriring in a small outcrop."
-     textoAoIr      "The guard stops you from walking into the cave."
-     abrir        jaAberta
-
-- exitCave
-     descricao "an exit to the west"
-     tags        "west", "exit"
-     local    cave
-     destino field
-     detalhes     "Sunluz pours in through an abriring in the cave's wall."
-     textoAoIr      "You walk out of the cave."
-     abrir        jaAberta
-
-- wallField
-     descricao "dense forest all around"
-     tags        "west", "north", "south", "forest"
-     local    field
-     detalhes     "The field is surrounded by trees and undergrowth."
-     textoAoIr      "Dense forest is blocking the way."
-     fofoca      "You cannot go there, it is impenetrable."
-
-- wallCave
-     descricao "solid rock all around"
-     tags        "east", "north", "rock"
-     local    cave
-     detalhes     "Carved in stone is a secret password 'abccb'."
-     textoAoIr      "Solid rock is blocking the way."
-
-- backroom
-     descricao "a backroom"
-     tags        "backroom"
-     detalhes     "The room is dusty and messy."
-     fofoca      "There is something of value to be found there."
-     capacidade    9999
-
-- wallBackroom
-     descricao "solid rock all around"
-     tags        "east", "west", "south", "rock"
-     local    backroom
-     detalhes     "Trendy wallpaper covers the rock walls."
-     textoAoIr      "Solid rock is blocking the way."
-
-- abrirPortaQuarto
-     descricao "an abrir door to the south"
-     tags        "south", "door", "doorway"
-     destino backroom
-     detalhes     "The door is abrir."
-     textoAoIr      "You walk through the door into a backroom."
-     abrir        jaAberta
-     fechar       trocarPortaParaQuarto
-
-- closedDoorToBackroom
-     descricao "a closed door to the south"
-     tags        "south", "door", "doorway"
-     local    cave
-     perspectiva    backroom
-     detalhes     "The door is closed."
-     textoAoIr      "The door is closed."
-     abrir        trocarPortaParaQuarto
-     fechar       jaFechada
-
-- abrirPortaCaverna
-     descricao "an abrir door to the north"
-     tags        "north", "door", "doorway"
-     destino cave
-     detalhes     "The door is abrir."
-     textoAoIr      "You walk through the door into the cave."
-     abrir        jaAberta
-     fechar       trocarPortaParaCaverna
-
-- closedDoorToCave
-     descricao "a closed door to the north"
-     tags        "north", "door", "doorway"
-     local    backroom
-     perspectiva    cave
-     detalhes     "The door is closed."
-     textoAoIr      "The door is closed."
-     abrir        trocarPortaParaCaverna
-     fechar       jaFechada
-
-- abrirCaixa
-     descricao "a wooden box"
-     tags        "box", "wooden box"
-     detalhes     "The box is abrir."
-     fofoca      "You need a key to abrir it."
+- bauAberto
+     descricao "um bau"
+     tags        "bau"
+     detalhes     "O bau esta aberto."
+     fofoca      "Ouvi dizer que ha um na caverna."
      peso      5
+     conteudos "Ele tem"
      capacidade    10
      abrir        jaAberta
-     fechar       trocarCaixa
-     trancar        aindaAberta
-     destrancar      jaAberta
+     fechar       trocarBau
 
-- closedBox
-     descricao "a wooden box"
-     tags        "box", "wooden box"
-     detalhes     "The box is closed."
+- bauFechado
+     condicao { return monstro->vida <= 0;}
+     descricao "uma bau"
+     tags        "bau"
+     detalhes     "O bau esta fechado."
+     local covil
      peso      5
-     abrir        trocarCaixa
+     abrir        trocarBau
      fechar       jaFechada
-     trancar        trocarCaixaTrancada
-     destrancar      jaDestrancada
-
-- lockedBox
-     descricao "a wooden box"
-     tags        "box", "wooden box"
-     local    backroom
-     detalhes     "The box is closed."
-     peso      5
-     abrir        aindaTrancada
-     fechar       jaFechada
-     trancar        jaTrancada
-     destrancar      trocarCaixaTrancada
-
-- keyForBox
-     descricao "a tiny key"
-     tags        "key", "tiny key"
-     local    cave
-     detalhes     "The key is really small and shiny."
-     fofoca      "A small key abrirs a small lock."
-     peso      1
 
 - lampOff
-     descricao "a lamp"
-     tags        "lamp"
-     local    aldeia
-     detalhes     "The lamp is off."
-     fofoca      "Essential in dark areas."
+     descricao "um lampiao antigo"
+     tags        "lampiao", "lamp", "lampiao antigo"
+     local    mae
+     detalhes     "O lampiao esta apagado."
+     fofoca      "Essencial em areas escuras."
      peso      5
 
 - lampOn
-     descricao "a lamp"
-     tags        "lamp"
-     detalhes     "The lamp is on."
+     descricao "um lampiao antigo"
+     tags        "lampiao", "lamp", "lampiao antigo"
+     detalhes     "O lampiao esta aceso."
      peso      5
      luz       100
-
-- club
-     descricao "a wooden club"
-     tags        "club", "wooden club"
-     local    field
-     detalhes     "Two feet of solid wood."
-     peso      5
-     impacto      -2
-
-- dagger
-     descricao "a dagger"
-     tags        "dagger"
-     local    field
-     detalhes     "The dagger is very sharp."
-     peso      7
-     impacto      -5
 
 - espada
      descricao "uma espada"
      tags        "espada"
-     local    aldeia
-     detalhes     "É uma herança de família."
+     local    mae
+     detalhes     "Uma das ultimas lembrancas de seu pai."
+     fofoca "E afiada"
      peso      10
-     impacto      -8
+     impacto      -9
+
+- carroca
+     descricao "uma carroca quebrada"
+     tags        "carroca", "carroca quebrada"
+     local    clareira
+     detalhes     "Uma carroca quebrada."
+     fofoca      "Ouvi dizer que um mercador que tinha uma carroca se perdeu na floresta."
+     capacidade 40
+     peso      100
+
+- chaveMisteriosa
+     descricao "uma chave misteriosa"
+     tags        "chave misteriosa", "chave"
+     local    carroca
+     detalhes     "A chave esta cheia de poeira."
+     peso      1
+
+- chaveRubi
+     descricao "uma chave feita de rubi"
+     tags        "chave de rubi", "chave rubi", "chave"
+     local    chefeAldeia
+     detalhes     "A chave e vermelha brilhante."
+     peso      1
+
+- chaveSafira
+     descricao "uma chave feita de safira"
+     tags        "chave de safira", "chave safira", "chave"
+     local    bauAberto
+     detalhes     "A chave e azul brilhante."
+     peso      1
+
+- chaveEsmeralda
+     descricao "uma chave feita de esmeralda"
+     tags        "chave de esmeralda", "chave esmeralda", "chave"
+     local    ladrao
+     detalhes     "A chave e verde brilhante."
+     fofoca "Serve para a abrir alguma coisa"
+     peso      1
+
+- macaVermelha
+     descricao "uma maca vermelha"
+     tags        "maca vermelha", "maca"
+     local    lago
+     detalhes     "Caida no chao, parece boa para comer."
+     peso      1
+     impacto      +5
+     comida sempreVerdadeiro
+
+- macaVerde
+     descricao "uma maca verde"
+     tags        "maca", "maca verde"
+     local    floresta5
+     detalhes     "Caida no chao, parece boa para comer."
+     peso      1
+     impacto      +10
+     comida sempreVerdadeiro
+
+- macaRoxa
+     descricao "uma maca roxa"
+     tags        "maca roxa", "maca"
+     local floresta3
+     detalhes     "A cor nao e muito agradavel, mas talvez de para comer."
+     peso      1
+     impacto      +15
+     comida sempreVerdadeiro
+
+- macaDourada
+     descricao "uma maca dourada"
+     tags        "maca dourada", "maca"
+     local    bauAberto
+     detalhes     "Tem uma cor brilhante e bonita, talvez de para comer."
+     peso      2
+     impacto      +20
+     comida sempreVerdadeiro
+
+- goblin
+     descricao "um goblin baixinho"
+     tags        "goblin"
+     local    floresta4
+     detalhes     "Verde e com um nariz enorme"
+     fofoca "Sao pequenos e tricoeiros."
+     vida      50
+     impacto      -1
+     capacidade    10
+     confiar -1
+
+- faca
+     descricao "uma faca"
+     tags        "faca"
+     local    floresta4
+     detalhes     "Era de um goblin derrotado."
+     peso      5
+     impacto      -5
+
+- garras
+     descricao "um par de garras"
+     local monstro
+     tags "garras"
+     detalhes "São grandes e afiadas"
+     peso 40
+     impacto -4
+
+- orc
+     descricao "um orc"
+     tags        "orc"
+     local    floresta1
+     detalhes     "Nao tem como argumentar com essa criatura."
+     vida      100
+     impacto      -2
+     capacidade    50
+     confiar -1
+
+- cimitarra
+     descricao "uma cimitarra"
+     tags        "cimitarra"
+     local    floresta1
+     detalhes     "Uma espada curva."
+     peso     12
+     impacto      -10
+
+- machadoGrande
+     descricao "um machado"
+     tags        "machado"
+     local    guarda
+     detalhes     "Esta encravado o nome de uma mulher no machado."
+     peso      15
+     impacto      -10
+
+- pedestal
+     descricao "algum tipo de pedestal"
+     tags "pedestal"
+     local deserto
+     capacidade 30
+     peso 50
+
+- espadaLendaria
+     descricao "uma espada brilhante"
+     tags        "espada", "espada brilhante"
+     local    pedestal
+     detalhes     "Ela e bonita."
+     peso      15
+     impacto      -15
+
+- ladrao
+     descricao "um ladrao"
+     tags        "ladrao", "ladroes"
+     local    clareira
+     detalhes     "Esta todo vestido de preto."
+     vida      120
+     impacto      -2
+     capacidade    25
+     confiar -1
+     fofoca "Ha alguns na floresta"
+
+- adaga
+     descricao "uma adaga"
+     tags "adaga"
+     local clareira
+     detalhes "Ha um pouco de sangue seco nela."
+     impacto   -6
+     peso 7
+     fofoca "A arma preferida de um ladrao"
+
+- bengala
+     descricao "uma bengala"
+     tags "bengala"
+     local chefeAldeia
+     detalhes "Usada pelo velho Adam para se apoiar."
+     impacto   -2
+     peso 3
+     fofoca "Serve para auxiliar uma pessoa a andar"
+
+- foice
+     descricao "uma foice"
+     tags "foice"
+     local temploBoss
+     detalhes "Usada pelo poderoso Gladion"
+     impacto -13
+     peso 13
+     fofoca "Serve para cortar mato"

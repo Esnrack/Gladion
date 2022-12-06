@@ -4,30 +4,30 @@
 #include "achar.h"
 #include "chegar.h"
 
-int executeAbrir(void)
+int executarAbrir(void) //abre algum objeto
 {
-   OBJETO *obj = objetoAlcancavel("what you want to abrir", params[0]);
+   OBJETO *obj = objetoAlcancavel("o que voce deseja abrir", params[0]);
    if (obj != NULL) (*obj->abrir)();
    return obj != NULL ? 1 : 0;
 }
 
-int executeFechar(void)
+int executarFechar(void) //fecha algum objeto
 {
-   OBJETO *obj = objetoAlcancavel("what you want to close", params[0]);
+   OBJETO *obj = objetoAlcancavel("o que voce deseja fechar", params[0]);
    if (obj != NULL) (*obj->fechar)();
    return obj != NULL ? 1 : 0;
 }
 
-int executeTrancar(void)
+int executarTrancar(void) //tranca algum objeto
 {
-   OBJETO *obj = objetoAlcancavel("what you want to lock", params[0]);
+   OBJETO *obj = objetoAlcancavel("o que voce deseja trancar", params[0]);
    if (obj != NULL) (*obj->trancar)();
    return obj != NULL ? 1 : 0;
 }
 
-int executeDestrancar(void)
+int executarDestrancar(void) //destranca algum objeto
 {
-   OBJETO *obj = objetoAlcancavel("what you want to unlock", params[0]);
+   OBJETO *obj = objetoAlcancavel("o que voce deseja destrancar", params[0]);
    if (obj != NULL) (*obj->destrancar)();
    return obj != NULL ? 1 : 0;
 }

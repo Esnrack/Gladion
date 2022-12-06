@@ -4,25 +4,25 @@
 #include "misc.h"
 #include "nome.h"
 
-OBJETO *objetoAlcancavel(const char *intencao, const char *nome)
+OBJETO *objetoAlcancavel(const char *intencao, const char *nome) //verifica se o objeto com o qual que interagir esta nas proximidades
 {
    OBJETO *obj = estaVisivel(intencao, nome);
    switch (verDistancia(player, obj))
    {
    case distEu:
-      printf("You should not be doing that to yourself.\n");
+      printf("Voce nao devia estar fazendo isso consigo mesmo.\n");
       break;
    case distContidoGuardado:
    case distContidoAqui:
-      printf("You would have to get it from %s first.\n",
+      printf("Voce deveria pegar isso de %s primeiro.\n",
              obj->local->descricao);
       break;
    case distLa:
-      printf("Too far away, move closer please.\n");
+      printf("Muito longe, va mais perto por favor.\n");
       break;
    case distAquiNao:
    case distObjetoDesconhecido:
-      // already handled by estaVisivel
+      // ja visto em estaVisivel
       break;
    default:
       return obj;

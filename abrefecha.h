@@ -1,4 +1,4 @@
-extern int executeAbrir(void);
-extern int executeFechar(void);
-extern int executeTrancar(void);
-extern int executeDestrancar(void);
+extern int executarAbrir(void);
+extern int executarFechar(void);
+extern int executarTrancar(void);
+extern int executarDestrancar(void);

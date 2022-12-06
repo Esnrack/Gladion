@@ -11,9 +11,9 @@ extern void jaDestrancada(void);
 extern void aindaAberta(void);
 extern void aindaTrancada(void);
 
-extern void trocarPortaParaQuarto(void);
-extern void trocarPortaParaCaverna(void);
-extern void trocarCaixa(void);
-extern void trocarCaixaTrancada(void);
+extern void trocarBau(void);
 
 extern void trocarLampada(void);
+
+extern void trocarParedeTrancada(void);
+extern void trocarPortaDoTemploTrancada(void);

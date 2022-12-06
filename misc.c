@@ -3,23 +3,23 @@
 #include "objeto.h"
 #include "misc.h"
 
-bool estaSegurando(OBJETO *recipiente, OBJETO *obj)
+bool estaSegurando(OBJETO *recipiente, OBJETO *obj) //verifica se algum item esta em algum lugar
 {
    return objetoValido(obj) && obj->local == recipiente;
 }
 
-bool estaAceso(OBJETO *alvo)
+bool estaAceso(OBJETO *alvo) //verfica se esta claro
 {
    OBJETO *obj;
    if (objetoValido(alvo))
    {
-      if (alvo->luz > 0)
+      if (alvo->luz > 0) //ve se a luz e maior que 0
       {
          return true;
       }
       for (obj = objs; obj < fimDosObjs; obj++)
       {
-         if (objetoValido(obj) && obj->luz > 0 &&
+         if (objetoValido(obj) && obj->luz > 0 && //verifica se algum dos objetos no local clareia
              (estaSegurando(alvo, obj) || estaSegurando(alvo, obj->local)))
          {
             return true;
@@ -29,13 +29,13 @@ bool estaAceso(OBJETO *alvo)
    return false;
 }
 
-static bool estaPerceptivel(OBJETO *obj)
+static bool estaPerceptivel(OBJETO *obj) //verifica se o player consegue ver um objeto
 {
    return obj->local == player ||
           estaAceso(obj) || estaAceso(obj->perspectiva) || estaAceso(player->local);
 }
 
-OBJETO *verPassagem(OBJETO *de, OBJETO *para)
+OBJETO *verPassagem(OBJETO *de, OBJETO *para) //verifica se uma passagem e pecebida naquele local
 {
    if (de != NULL && para != NULL)
    {
@@ -51,7 +51,7 @@ OBJETO *verPassagem(OBJETO *de, OBJETO *para)
    return NULL;
 }
 
-DISTANCE verDistancia(OBJETO *de, OBJETO *para)
+DISTANCE verDistancia(OBJETO *de, OBJETO *para) //verifica as diferentes distancias
 {
    return para == NULL                               ? distObjetoDesconhecido :
           !objetoValido(para)                         ? distAquiNao :
@@ -66,7 +66,7 @@ DISTANCE verDistancia(OBJETO *de, OBJETO *para)
                                                      distAquiNao;
 }
 
-OBJETO *atorAqui(void)
+OBJETO *atorAqui(void) //verifica se ha um NPC no local
 {
    OBJETO *obj;
    for (obj = objs; obj < fimDosObjs; obj++)
@@ -80,7 +80,7 @@ OBJETO *atorAqui(void)
    return NULL;
 }
 
-int listaObjetosNoLocal(OBJETO *local)
+int listaObjetosNoLocal(OBJETO *local) //lista os objeto no local onde se procura
 {
    int contar = 0;
    OBJETO *obj;

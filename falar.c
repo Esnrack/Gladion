@@ -6,25 +6,25 @@
 #include "nome.h"
 #include "chegar.h"
 
-static int falar(const char *sobre, OBJETO *para)
+static int falar(const char *sobre, OBJETO *para) //fala com o player
 {
-   OBJETO *topic = verTopico(sobre);
-   if (topic == NULL)
+   OBJETO *topic = verTopico(sobre); //verifica se o objeto existe
+   if (topic == NULL) //se o objeto nao existir entra aqui
    {
-      printf("I don't understand what you want to talk sobre.\n");
+      printf("Nao entendi sobre o que voce quer falar.\n");
       return 0;
    }
    else
    {
-      printf("You hear %s say: '%s'\n",
+      printf("Voce ouve %s falar: '%s'\n",
              para->descricao,
-             topic == para ? "I don't want to talk sobre myself."
+             topic == para ? "Eu nao gostaria de falar sobre mim."
                          : topic->fofoca);
       return 1;
    }
 }
 
-int executarFala(void)
+int executarFala(void)  //executa a fala
 {
    OBJETO *para = atorAqui();
    if (para != NULL)
@@ -33,14 +33,14 @@ int executarFala(void)
    }
    else
    {
-      printf("There is nobody here to talk to.\n");
+      printf("Nao ha ninguem aqui para conversar.\n");
       return 0;
    }
 }
 
-int executarFalarPara(void)
+int executarFalarPara(void) //executa a fala para alguem especifico
 {
-   OBJETO *para = objetoAlcancavel("who to talk to", params[1]);
+   OBJETO *para = objetoAlcancavel("com quem conversar", params[1]);
    if (para != NULL)
    {
       if (para->vida > 0)
@@ -49,7 +49,7 @@ int executarFalarPara(void)
       }
       else
       {
-         printf("There is no response from %s.\n", para->descricao);
+         printf("Nao ha resposta de %s.\n", para->descricao);
          return 1;
       }
    }

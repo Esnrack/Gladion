@@ -1,0 +1,119 @@
+pedir espada
+pedir lamp
+pedir chabe para chefe
+pedir chave para chefe
+ir leste
+pegar maca
+ir leste
+atacar
+atacar
+vida
+ir sul
+pegar maca verde
+largar chave
+ir norte
+ir leste
+ir sul
+ir sul
+acender lamp
+ir oeste
+atacar
+atacar
+atacar
+vida
+atacar
+atacar
+vida
+atacar
+atacar
+vida
+abrir bau
+pegar chave
+pegar maca dourada
+ir leste
+ir norte
+ir norte
+ir norte
+ir oeste
+inventario
+ir norte
+vida
+atacar
+vida
+atacar
+atacar
+vida
+atacar
+vida
+atacar
+atacar
+vida
+atacar
+vida
+atacar
+vida
+atacar
+vida
+atacar
+vida
+atacar
+vida
+atacar
+comer maca vermelha
+vida
+atacar
+atacar
+vida
+pegar chave esmeralda
+ir sul
+ir leste
+pegar maca
+pegar maca roxa
+inventario
+ir sul
+ir oeste
+ir sul
+largar maca dourada
+pegar chave rubi
+destrancar porta
+largar chave rubi
+largar chave esmeralda
+largar chave safira
+pegar maca dourada
+ir norte
+ir leste
+ir norte
+pegar maca roxa
+inventario
+ir sul
+ir oeste
+ir sul
+ir oeste
+atacar gladion
+vida
+atacar gladion
+vida
+atacar gladion
+vida
+atacar gladion
+vida
+comer maca dourada
+vida
+atacar gladion
+atacar gladion
+vida
+atacar gladion
+vida
+atacar gladion
+vida
+comer maca roxa
+vida
+atacar gladion
+atacar gladion
+vida
+vida
+atacar gladion
+vida
+atacar gladion
+inventario
+comer espada

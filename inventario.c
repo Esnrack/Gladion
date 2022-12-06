@@ -8,54 +8,61 @@
 
 int executarPegar(void)
 {
-   OBJETO *obj = estaVisivel("what you want to get", params[0]);
+   OBJETO *obj = estaVisivel("o que voce quer pegar", params[0]); //verifica se o objeto esta visivel
    switch (verDistancia(player, obj))
    {
    case distEu:
-      printf("You should not be doing that to yourself.\n");
+      printf("Voce nao devia fazer isso com voce mesmo.\n");
       return 1;
    case distGuardado:
-      printf("You already have %s.\n", obj->descricao);
+      printf("Voce ja tem %s.\n", obj->descricao);
       return 0;
    case distLa:
-      printf("Too far away, move closer please.\n");
+      printf("Muito longe, va mais perto.\n");
       return 0;
    case distObjetoDesconhecido:
-      // already handled by estaVisivel
+      //ja visto em estaVisivel
       return 0;
    default:
-      if (obj->local != NULL && obj->local->vida > 0)
+      if (obj->local != NULL && obj->local->vida > 0) //verifica se o local onde o objeto esta guardado esta vivo
       {
-         printf("You should ask %s nicely.\n", obj->local->descricao);
+         printf("Voce devia pedir para %s gentilmente.\n", obj->local->descricao);
          return 1;
       }
       else
       {
-         return moverObjetos(obj, player);
+         return moverObjetos(obj, player); //move o objeto
       }
    }
 }
 
-int executarLargar(void)
+int executarLargar(void) //larga o objeto no local onde o player esta
 {
-   return moverObjetos(pegarPosse(player, "drop", params[0]), player->local);
+   return moverObjetos(pegarPosse(player, "largar", params[0]), player->local);
 }
 
-int executarPedir(void)
+int executarPedir(void) //pede para um NPC um item
 {
-   return moverObjetos(pegarPosse(atorAqui(), "ask", params[0]), player);
+   return moverObjetos(pegarPosse(atorAqui(), "pedir", params[0]), player);
 }
 
-int executarDar(void)
+int executarDar(void) //da um item para um NPC
 {
-   return moverObjetos(pegarPosse(player, "give", params[0]), atorAqui());
+   return moverObjetos(pegarPosse(player, "dar", params[0]), atorAqui());
 }
 
-int executarInventario(void)
+int executarInventario(void) //verifica o inventario
 {
    if (listaObjetosNoLocal(player) == 0)
    {
-      printf("You are empty-handed.\n");
+      printf("Seus bolsos estao vazios.\n");
    }
-   return 1;
+   return 0;
+}
+
+int executarVida(void) //verifica a quantidade de vida
+{
+   printf("Sua vida atual e %i.\n", player->vida);
+   return 0;
+
 }

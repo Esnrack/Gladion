@@ -33,6 +33,13 @@ static int executarAjuda(void)
 
 }
 
+static int executarPular(void)
+{
+   printf("O que eu deveria fazer, aplaudir?\n");
+   return 0;
+
+}
+
 static int executarNaoAchou(void) //caso nao ache a funcao
 {
    const char *src = *params;
@@ -89,6 +96,7 @@ int separarExecutar(const char *input) //executa os comandos
       { "vida"                , executarVida      },
       { "esperar"             , executarEspera    },
       { "ajuda"               , executarAjuda     },
+      { "pular"               , executarPular     },
       { "A"                   , executarNaoAchou  } //aqui cai qualquer coisa que nao saiba o que e
    };
    const COMANDO *cmd;

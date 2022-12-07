@@ -60,7 +60,7 @@ extern OBJETO objs[];
      descricao "sua irma Muriel"
      tags        "irma", "muriel", "irma muriel"
      local    temploBoss
-     detalhes     "Uma jovem mulher de olhos e cabelos castanhos."
+     detalhes     "Sua irma te agradece por vir salva-la."
      fofoca      "Ela foi sequestrada"
      conteudos    "Ela tem"
      vida      40

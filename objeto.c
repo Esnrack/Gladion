@@ -184,7 +184,7 @@ OBJETO objs[] = {
 		 temploBoss, /*origem*/
 		NULL, /*destino*/
 		NULL, /*perspectiva*/
-		 "Uma jovem mulher de olhos e cabelos castanhos.", /*detalhes*/
+		 "Sua irma te agradece por vir salva-la.", /*detalhes*/
 		 "Ela tem", /*conteudos*/
 		"Voce nao pode chegar mais perto que isso.", /*textoAoIr*/
 		 "Ela foi sequestrada", /*fococa*/

@@ -26,9 +26,10 @@ static int executarSair(void) //sair do jogo
 
 static int executarAjuda(void)
 {
-   printf("sair\nolhar\nolhar volta\nlhar para A\nolhar A\nexaminar A\nir para A\nir A\npegar A de B\npegar A\ncolocar A em B\nargar A em B\nlargar A\npedir A para B\npedir A\ndar A para B\ndar A\ninventario\nabrir A\nfechar A\ntrancar A\ndestrancar A\nacender A\napagar A\nligar A\ndesligar A\nfalar com B sobre A\nfalar sobre A com B\nfalar sobre A\nfalar A\natacar com B\natacar A com B\natacar A\ncomer A\nvida\nesperar\najuda\nA\n");
+   printf("sair\nolhar\nolhar volta\nlhar para A\nolhar A\nexaminar A\nir para A\nir A\npegar A de B\npegar A\ncolocar A em B\nargar A em B\nlargar A\npedir A para B\npedir A\ndar A para B\ndar A\ninventario\nabrir A\nfechar A\ntrancar A\ndestrancar A\nacender A\napagar A\nligar A\ndesligar A\nfalar com B sobre A\nfalar sobre A com B\nfalar sobre A\nfalar A\natacar com B\natacar A com B\natacar A\ncomer A\nvida\nesperar\najuda\n");
+   printf("\nAbreviacoes:\ns (ir sul)\nn (ir norte)\no (ir oeste)\nl (ir leste)\ninv (inventario)\nx A (examinar A)");
 
-         return 0;
+   return 0;
 
 }
 

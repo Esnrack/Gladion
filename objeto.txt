@@ -744,8 +744,8 @@ extern OBJETO objs[];
      luz       100
 
 - espada
-     descricao "uma espada"
-     tags        "espada"
+     descricao "a espada de seu pai"
+     tags        "espada", "espada do pai", "espada de seu pai", "espada de familia"
      local    mae
      detalhes     "Uma das ultimas lembrancas de seu pai."
      fofoca "E afiada"

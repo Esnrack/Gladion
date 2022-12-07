@@ -61,6 +61,7 @@ int main()
    printf("Bem vindo a Gladion.\n");
    printf("Sua irma foi sequestrada pelo maligno Gladion\n");
    printf("Agora cabe a voce salva-la e derrotar o mal que assola essas terras.\n");
+   printf("Caso precise saber os comandos use o comando 'ajuda'\n");
    printf("Boa sorte em sua aventura!\n");
    while (processarInput(input, sizeof input) && pegarInput(nomeArq));
    printf("\nAte mais, Pelaveth!\n");

@@ -95,7 +95,7 @@ static bool condicao81(void)  { return monstro->vida <= 0;}
 static const char *tags81[] = { "bau", NULL};
 static const char *tags82[] = { "lampiao", "lamp", "lampiao antigo", NULL};
 static const char *tags83[] = { "lampiao", "lamp", "lampiao antigo", NULL};
-static const char *tags84[] = { "espada", NULL};
+static const char *tags84[] = { "espada", "espada do pai", "espada de seu pai", "espada de familia", NULL};
 static const char *tags85[] = { "carroca", "carroca quebrada", NULL};
 static const char *tags86[] = { "chave misteriosa", "chave", NULL};
 static const char *tags87[] = { "chave de rubi", "chave rubi", "chave", NULL};
@@ -2391,7 +2391,7 @@ OBJETO objs[] = {
 	},
 	{	/* 84 = espada */
 		sempreVerdadeiro, /*condicao*/
-		 "uma espada", /*descricao*/
+		 "a espada de seu pai", /*descricao*/
 		NULL, /*oculto*/
 		tags84, /*tags*/
 		 mae, /*local*/
